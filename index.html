@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SubSync Pro | Online Subtitle Editor</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>SubSync <span>Pro</span></h1>
+
+        <div class="toolbar">
+            <label class="upload-label">
+                <i class="fas fa-file-upload"></i> Upload File
+                <input type="file" id="fileInput" accept=".srt,.vtt,.txt">
+            </label>
+            <button onclick="clearEditor()"><i class="fas fa-trash"></i> Clear</button>
+        </div>
+
+        <textarea id="editor" placeholder="Upload a subtitle file or paste your text here to edit..."></textarea>
+
+        <div class="controls">
+            <label><i class="fas fa-clock"></i> Time Shift (sec):</label>
+            <input type="number" id="shiftAmount" step="0.1" value="-90" placeholder="e.g. -90 or 5.5">
+            
+            <label><i class="fas fa-file-export"></i> Export As:</label>
+            <select id="exportFormat">
+                <option value="srt">SRT (SubRip)</option>
+                <option value="vtt">VTT (WebVTT)</option>
+                <option value="txt">TXT (Text Only)</option>
+            </select>
+            
+            <button class="primary" onclick="processAndDownload()">
+                <i class="fas fa-download"></i> Process & Download
+            </button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
