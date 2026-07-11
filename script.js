@@ -1,37 +1,57 @@
+// --- Dark/Light Mode Logic ---
+const themeToggleBtn = document.getElementById('themeToggle');
+const body = document.body;
+
+// Check LocalStorage for saved theme
+const savedTheme = localStorage.getItem('theme');
+if (savedTheme === 'light') {
+    body.classList.add('light-mode');
+    themeToggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
+}
+
+// Toggle Theme on Button Click
+themeToggleBtn.addEventListener('click', () => {
+    body.classList.toggle('light-mode');
+    
+    if (body.classList.contains('light-mode')) {
+        localStorage.setItem('theme', 'light');
+        themeToggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
+    } else {
+        localStorage.setItem('theme', 'dark');
+        themeToggleBtn.innerHTML = '<i class="fas fa-sun"></i>';
+    }
+});
+
+
+// --- Subtitle Processing Logic ---
 let currentFilename = 'subtitles';
 
-// 1. Handle File Upload
 document.getElementById('fileInput').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (!file) return;
     
-    // Extract filename without extension
     const parts = file.name.split('.');
     currentFilename = parts.length > 1 ? parts.slice(0, -1).join('.') : file.name;
     
     const reader = new FileReader();
-    
     reader.onload = function(event) {
         const editor = document.getElementById('editor');
         editor.value = event.target.result;
         
-        // Pop animation
         editor.style.transform = 'scale(1.02)';
         setTimeout(() => editor.style.transform = 'scale(1)', 200);
     };
     
     reader.readAsText(file);
-    e.target.value = ''; // Reset input so same file can be uploaded again
+    e.target.value = ''; 
 });
 
-// Clear Editor function
 function clearEditor() {
     document.getElementById('editor').value = '';
     document.getElementById('fileInput').value = '';
     currentFilename = 'subtitles';
 }
 
-// Helper: Parse timestamp to seconds
 function parseTime(timeStr) {
     timeStr = timeStr.replace(',', '.');
     const parts = timeStr.split(':');
@@ -52,7 +72,6 @@ function parseTime(timeStr) {
     return h * 3600 + m * 60 + s + ms / 1000;
 }
 
-// Helper: Format seconds to timestamp
 function formatTime(seconds, format) {
     if (seconds < 0) seconds = 0;
     const h = Math.floor(seconds / 3600);
@@ -63,7 +82,6 @@ function formatTime(seconds, format) {
     return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}${sep}${String(ms).padStart(3,'0')}`;
 }
 
-// 2. Process and Format Subtitles
 function processAndDownload() {
     const text = document.getElementById('editor').value;
     const shift = parseFloat(document.getElementById('shiftAmount').value) || 0;
@@ -79,7 +97,6 @@ function processAndDownload() {
     if (format === 'vtt') output.push('WEBVTT\n');
 
     let index = 1;
-    // Regex for standard subtitle timestamps
     const timeRegex = /(\d{2,}:\d{2}:\d{2}[,\.]\d{3})\s*-->\s*(\d{2,}:\d{2}:\d{2}[,\.]\d{3})/;
 
     blocks.forEach(block => {
@@ -96,7 +113,6 @@ function processAndDownload() {
                 let t1 = parseTime(match[1]) + shift;
                 let t2 = parseTime(match[2]) + shift;
 
-                // Skip if subtitle ends before 0 seconds
                 if (t2 <= 0) return; 
                 if (t1 < 0) t1 = 0;
 
@@ -109,12 +125,10 @@ function processAndDownload() {
                     newBlock.push(newTimeLine);
                 }
             } else if (hasTime || (!line.match(/^\d+$/) && format === 'txt')) {
-                // Keep text lines. Skip solitary numbers if we are building SRT/VTT.
                 newBlock.push(line);
             }
         }
 
-        // Compile block based on format selected
         if (format === 'txt') {
             const txtLines = newBlock.filter(l => !l.match(timeRegex) && !l.match(/^\d+$/));
             if (txtLines.length > 0) output.push(txtLines.join('\n'));
@@ -124,7 +138,6 @@ function processAndDownload() {
         }
     });
 
-    // 3. Trigger Download
     const finalString = output.join('\n\n');
     const blob = new Blob([finalString], { type: 'text/plain' });
     const link = document.createElement('a');

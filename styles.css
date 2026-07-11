@@ -1,15 +1,37 @@
+/* Default Dark Mode Variables */
 :root {
     --primary: #8b5cf6;
     --primary-hover: #7c3aed;
-    --bg: #0f172a;
+    --bg-start: #0f172a;
+    --bg-end: #1e1b4b;
     --surface: rgba(30, 41, 59, 0.6);
     --text: #f8fafc;
+    --text-muted: #cbd5e1;
+    --border: rgba(255, 255, 255, 0.1);
+    --input-bg: rgba(255, 255, 255, 0.05);
+    --input-hover: rgba(255, 255, 255, 0.1);
+    --shadow: rgba(0, 0, 0, 0.5);
+}
+
+/* Light Mode Variables */
+body.light-mode {
+    --primary: #6d28d9;
+    --primary-hover: #5b21b6;
+    --bg-start: #f8fafc;
+    --bg-end: #e2e8f0;
+    --surface: rgba(255, 255, 255, 0.85);
+    --text: #0f172a;
+    --text-muted: #334155;
+    --border: rgba(0, 0, 0, 0.15);
+    --input-bg: rgba(0, 0, 0, 0.05);
+    --input-hover: rgba(0, 0, 0, 0.1);
+    --shadow: rgba(0, 0, 0, 0.1);
 }
 
 body {
     margin: 0;
     font-family: 'Segoe UI', system-ui, sans-serif;
-    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+    background: linear-gradient(135deg, var(--bg-start) 0%, var(--bg-end) 100%);
     color: var(--text);
     min-height: 100vh;
     display: flex;
@@ -17,19 +39,21 @@ body {
     align-items: center;
     padding: 20px;
     box-sizing: border-box;
+    transition: background 0.5s ease, color 0.5s ease;
 }
 
 .container {
     background: var(--surface);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border);
     border-radius: 24px;
     padding: 40px;
     width: 100%;
     max-width: 900px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 25px 50px -12px var(--shadow);
     animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    transition: all 0.5s ease;
 }
 
 @keyframes slideUp {
@@ -37,9 +61,15 @@ body {
     to { opacity: 1; transform: translateY(0); }
 }
 
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
 h1 {
-    text-align: center;
-    margin: 0 0 30px 0;
+    margin: 0;
     font-weight: 300;
     letter-spacing: 2px;
     font-size: 2.5rem;
@@ -50,6 +80,25 @@ h1 span {
     font-weight: 700;
 }
 
+.theme-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    padding: 0;
+}
+
+.theme-btn:hover {
+    background: var(--input-hover);
+    transform: rotate(15deg);
+}
+
 .toolbar {
     display: flex;
     gap: 15px;
@@ -58,9 +107,9 @@ h1 span {
 }
 
 button, select, input {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: white;
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+    color: var(--text);
     padding: 12px 20px;
     border-radius: 12px;
     font-size: 14px;
@@ -77,12 +126,13 @@ button {
 }
 
 button:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--input-hover);
     transform: translateY(-2px);
 }
 
 button.primary {
     background: var(--primary);
+    color: white;
     border: none;
     box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
     margin-left: auto;
@@ -91,20 +141,21 @@ button.primary {
 button.primary:hover {
     background: var(--primary-hover);
     box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
+    background: var(--primary-hover);
 }
 
 textarea {
     width: 100%;
     height: 400px;
-    background: rgba(0, 0, 0, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #e2e8f0;
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+    color: var(--text);
     padding: 20px;
     border-radius: 16px;
     resize: vertical;
     font-family: 'Courier New', Courier, monospace;
     font-size: 14px;
-    line-height: 1.5;
+    line-height: 1.6;
     box-sizing: border-box;
     transition: all 0.3s ease;
     margin-bottom: 20px;
@@ -120,14 +171,15 @@ textarea:focus {
     flex-wrap: wrap;
     gap: 15px;
     align-items: center;
-    background: rgba(0, 0, 0, 0.2);
+    background: var(--input-bg);
     padding: 20px;
     border-radius: 16px;
+    transition: background 0.5s ease;
 }
 
 .controls label {
     font-size: 14px;
-    color: #cbd5e1;
+    color: var(--text-muted);
     font-weight: 500;
 }
 
@@ -137,30 +189,27 @@ textarea:focus {
     font-size: 16px;
 }
 
-input[type="file"] {
-    display: none;
-}
+input[type="file"] { display: none; }
 
 .upload-label {
     cursor: pointer;
     display: flex;
     align-items: center;
     gap: 8px;
-    background: rgba(255,255,255,0.05);
+    background: var(--input-bg);
     padding: 12px 20px;
     border-radius: 12px;
-    border: 1px dashed rgba(255,255,255,0.3);
+    border: 1px dashed var(--border);
     transition: 0.3s;
     font-weight: 600;
 }
 
 .upload-label:hover {
     border-color: var(--primary);
-    background: rgba(139, 92, 246, 0.1);
     color: var(--primary);
 }
 
 select option {
-    background: var(--bg);
-    color: white;
+    background: var(--bg-start);
+    color: var(--text);
 }

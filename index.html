@@ -10,14 +10,19 @@
 <body>
 
     <div class="container">
-        <h1>SubSync <span>Pro</span></h1>
+        <div class="header">
+            <h1>SubSync <span>Pro</span></h1>
+            <button id="themeToggle" class="theme-btn" aria-label="Toggle Theme">
+                <i class="fas fa-sun"></i>
+            </button>
+        </div>
 
         <div class="toolbar">
             <label class="upload-label">
                 <i class="fas fa-file-upload"></i> Upload File
                 <input type="file" id="fileInput" accept=".srt,.vtt,.txt">
             </label>
-            <button onclick="clearEditor()"><i class="fas fa-trash"></i> Clear</button>
+            <button class="clear-btn" onclick="clearEditor()"><i class="fas fa-trash"></i> Clear</button>
         </div>
 
         <textarea id="editor" placeholder="Upload a subtitle file or paste your text here to edit..."></textarea>
