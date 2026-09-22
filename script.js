@@ -38,8 +38,15 @@ document.getElementById('fileInput').addEventListener('change', function(e) {
         const editor = document.getElementById('editor');
         editor.value = event.target.result;
         
+        editor.style.transition = 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
         editor.style.transform = 'scale(1.02)';
-        setTimeout(() => editor.style.transform = 'scale(1)', 200);
+
+        setTimeout(() => {
+            editor.style.transform = 'scale(1)';
+            setTimeout(() => editor.style.transition = '', 300); // cleanup transition after effect
+        }, 150);
+
+        showToast("File loaded successfully", "success");
     };
     
     reader.readAsText(file);
@@ -82,13 +89,30 @@ function formatTime(seconds, format) {
     return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}${sep}${String(ms).padStart(3,'0')}`;
 }
 
+// --- Toast Notification System ---
+function showToast(message, type = 'success') {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+
+    const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+    toast.innerHTML = `<i class="fas ${icon}"></i> <span>${message}</span>`;
+
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.classList.add('hiding');
+        setTimeout(() => toast.remove(), 400); // Wait for transition
+    }, 3000);
+}
+
 function processAndDownload() {
     const text = document.getElementById('editor').value;
     const shift = parseFloat(document.getElementById('shiftAmount').value) || 0;
     const format = document.getElementById('exportFormat').value;
 
     if (!text.trim()) {
-        alert("Please upload a file or paste subtitle text first.");
+        showToast("Please upload a file or paste subtitle text first.", "error");
         return;
     }
 
@@ -148,4 +172,6 @@ function processAndDownload() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+
+    showToast(`File processed and downloaded as .${format}`, "success");
 }
